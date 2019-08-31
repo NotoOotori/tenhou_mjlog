@@ -1,3 +1,14 @@
+# Resource folders / files
+html/
+mjlog/
+scraw/
+temp/
+mjlog_urls.txt
+*.log
+
+# VSCODE configuraion
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
