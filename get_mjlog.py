@@ -38,8 +38,8 @@ class LogParser(HTMLParser):
 
 def main():
     ''' Get mjlog files from scraw zips. '''
-    unzip()
-    parse()
+    # unzip()
+    # parse()
     crawl()
 
 def crawl():
@@ -50,6 +50,8 @@ def crawl():
         for raw_url in raw_url_file.readlines():
             mjlog_name = raw_url.split('/')[-1][1:-1]
             mjlog_path = MJLOGDIR + mjlog_name + '.mjlog'
+            if os.path.exists(mjlog_path):
+                continue
             for sub in subs.copy():
                 url = re.sub(pattern, sub, raw_url)
                 try:
