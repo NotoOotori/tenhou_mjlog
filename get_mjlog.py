@@ -38,8 +38,8 @@ class LogParser(HTMLParser):
 
 def main():
     ''' Get mjlog files from scraw zips. '''
-    # unzip()
-    # parse()
+    unzip()
+    parse()
     crawl()
 
 def crawl():
