@@ -12,8 +12,8 @@ from pathlib import Path
 
 HEADER = {
     'Host': 'e.mjv.jp',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:65.0) Gecko/20100101 Firefox/65.0', 
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:65.0) Gecko/20100101 Firefox/65.0',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     'Accept-Language': 'en-US,en;q=0.5',
     'Accept-Encoding': 'gzip, deflate',
     'Connection': 'keep-alive'
@@ -57,22 +57,23 @@ def crawl():
                 try:
                     req = urllib.request.Request(url=url, headers=HEADER)
                     opener = urllib.request.build_opener()
-                    response = opener.open(req)
+                    response = opener.open(req, timeout=1)
                     response = gzip.decompress(response.read()).decode('utf-8')
                     with open(mjlog_path, 'w') as outfile:
                         outfile.write(response)
-                    time.sleep(1)
+                    print(mjlog_name)
+                    # time.sleep(1)
                     break
                 except urllib.error.HTTPError as e:
                     if e.code == 404:
                         with open('404.log', 'a') as log:
-                            log.write('sub: {} mjlog: {}'.format(subs.pop(0), mjlog_name))
+                            log.write('sub: {} mjlog: {}\n'.format(subs.pop(0), mjlog_name))
                     else:
                         with open('crawl.log', 'a') as log:
-                            log.write('exception: {} mjlog: {}'.format(str(e), mjlog_name))
+                            log.write('HTTPError: {} mjlog: {}\n'.format(str(e), mjlog_name))
                 except BaseException as e:
                     with open('crawl.log', 'a') as log:
-                        log.write('exception: {} mjlog: {}'.format(str(e), mjlog_name))
+                        log.write('exception: {} mjlog: {}\n'.format(str(e), mjlog_name))
 
 def parse():
     ''' Extract mahjong urls from html files. '''
@@ -95,8 +96,11 @@ def unzip():
     prepare_dir(TEMPDIR)
     for year in YEARS:
         zip_path = '{}scraw{}.zip'.format(SCRAWDIR, year)
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            zip_ref.extractall(TEMPDIR)
+        try:
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(TEMPDIR)
+        except FileNotFoundError:
+            pass
     prepare_dir(HTMLDIR)
     for gz_path in glob.glob(TEMPDIR + '*/*.html.gz', recursive=True):
         gz_name = Path(gz_path).stem
