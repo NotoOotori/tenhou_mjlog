@@ -18,10 +18,11 @@ HEADER = {
     'Accept-Encoding': 'gzip, deflate',
     'Connection': 'keep-alive'
 }
-SCRAWDIR = 'scraw/'
-TEMPDIR = 'temp/'
-HTMLDIR = 'html/'
-MJLOGDIR = 'mjlog/'
+DOWNLOADDIR = 'download/'
+SCRAWDIR = DOWNLOADDIR + 'scraw/'
+TEMPDIR = DOWNLOADDIR + 'temp/'
+HTMLDIR = DOWNLOADDIR + 'html/'
+MJLOGDIR = DOWNLOADDIR + 'mjlog/'
 YEARS = list(range(2013, 2019))
 
 class LogParser(HTMLParser):
@@ -66,10 +67,10 @@ def crawl():
                     break
                 except urllib.error.HTTPError as e:
                     if e.code == 404:
-                        with open('404.log', 'a') as log:
+                        with open('log/404.log', 'a') as log:
                             log.write('sub: {} mjlog: {}\n'.format(subs.pop(0), mjlog_name))
                     else:
-                        with open('crawl.log', 'a') as log:
+                        with open('log/crawl.log', 'a') as log:
                             log.write('HTTPError: {} mjlog: {}\n'.format(str(e), mjlog_name))
                 except BaseException as e:
                     with open('crawl.log', 'a') as log:
